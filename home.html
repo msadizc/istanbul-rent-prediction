@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kira Tahmin Sistemi - msadiozcan</title>
+  <style>
+    body {
+  font-family: 'Microsoft Sans Serif', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #1c3241;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+    label, select {
+    display: table-row;
+      width: 100%;
+  }
+
+.container {
+  display: flex;
+  width: 80%;
+  background-color: #5ba5d7;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.left-section {
+  flex: 1;
+  margin-right: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.right-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      flex-shrink: 0;
+    }
+
+.upper-right-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 88px;
+    }
+
+    .lower-right-section {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+    }
+
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-section input, .form-section button {
+  width: 100%;
+}
+
+.label-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#resultTable {
+      flex-grow: 1;
+      overflow-y: auto;
+      text-align: center;
+      font-size: 24px;
+      font-family: Calibri, sans-serif;
+    }
+
+    .note-text {
+      color: #ffffff;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="left-section">
+      <div class="form-section">
+        <h1>Kira Tahmin Sistemi</h1>
+      <form id="propertyForm" action="http://localhost:5000" method="POST">
+      <label for="fiyat">Fiyat:</label>
+      <input type="text" name="fiyat" required><br>
+
+      <label for="ilce">İlçe:</label>
+      <input type="text" name="ilce" required><br>
+
+      <label for="mahalle">Mahalle:</label>
+      <input type="text" name="mahalle" required><br>
+
+      <label for="brutmetrekare">Brüt Metrekare</label>
+      <input type="text" name="brutmetrekare" required><br>
+
+      <label for="yas">Binanın Yaşı:</label>
+      <input type="text" name="yas" required><br>
+
+      <label for="katsayisi">Binanın Kat Sayısı:</label>
+      <input type="text" name="katsayisi" required><br>
+
+      <label for="netmetrekare">Net Metrekare:</label>
+      <input type="text" name="netmetrekare" required><br>
+
+      <label for="odasayisi">Oda Sayısı:</label>
+      <input type="text" name="odasayisi" required><br>
+
+      <label for="banyosayisi">Banyo Sayısı:</label>
+      <input type="text" name="banyosayisi" required><br>
+
+       <label for="bulundugukat">Bulunduğu Kat:</label>
+       <input type="text" name="bulundugukat" required>
+       <!--<select name="bkat_select">
+        <option value="">Select an option</option>
+        <option value="25">20-30</option>
+        <option value="35">30-40</option>
+        <option value="0.5">Bahçe Dublex</option>
+        <option value="0">Bahçe Katı</option>
+        <option value="0">Düz Giriş</option>
+        <option value="-1">Kot 1 (-1)</option>
+        <option value="-2">Kot 2 (-2)</option>
+        <option value="-3">Kot 3 (-3)</option>
+        <option value="0">Müstakil</option>
+        <option value="-1">Tam Bodrum</option>
+        <option value="0">Villa Tipi</option>
+        <option value="-0.5">Yarı Bodrum</option>
+        <option value="-0.5">Yüksek Giriş</option>  -->
+      </select><br>
+
+      <label for="isitmatipi">Isıtma Tipi:</label>
+        <select name="isitmatipi" required>
+          <option value="Doğalgaz Sobalı">Doğalgaz Sobalı</option>
+          <option value="Elektrikli Radyatör">Elektrikli Radyatör</option>
+          <option value="Fancoil Ünitesi">Fancoil Ünitesi</option>
+          <option value="Güneş Enerjisi">Güneş Enerjisi</option>
+          <option value="Isıtma Yok">Isıtma Yok</option>
+          <option value="Kat Kaloriferi">Kat Kaloriferi</option>
+          <option value="Klimalı">Klimalı</option>
+          <option value="Kombi Doğalgaz" selected>Kombi Doğalgaz</option>
+          <option value="Kombi Fueloil">Kombi Fueloil</option>
+          <option value="Merkezi (Pay Ölçer)">Merkezi (Pay Ölçer)</option>
+          <option value="Merkezi Doğalgaz">Merkezi Doğalgaz</option>
+          <option value="Merkezi Fueloil">Merkezi Fueloil</option>
+          <option value="Sobalı">Sobalı</option>
+          <option value="VRV">VRV</option>
+          <option value="Yerden Isıtma">Yerden Isıtma</option>
+          <option value="Şömine">Şömine</option>
+        </select><span id="bkat_error"></span><br><br>
+
+      <label for="esyadurumu">Eşya Durumu:</label>
+        <select name="esyadurumu" required>
+        <option value="Boş" selected>Boş</option>
+          <option value="Eşyalı">Eşyalı</option>
+        </select><br>
+
+      <label for="yapidurumu">Yapı Durumu:</label>
+        <select name="yapidurumu" required>
+        <option value="Sıfır">Sıfır</option>
+          <option value="Yapım Aşamasında">Yapım Aşamasında</option>
+          <option value="İkinci El" selected>İkinci El</option>
+        </select><br>
+
+      <label for="site">Site İçerisinde:</label>
+        <select name="site" required>
+        <option value="Evet" selected>Evet</option>
+          <option value="Hayır" selected>Hayır</option>
+        </select><br>
+
+        <label for="kuldurumu">Kullanım Durumu:</label>
+        <select name="kuldurumu" required>
+        <option value="Boş" selected>Boş</option>
+          <option value="Kiracı Oturuyor">Kiracı Oturuyor</option>
+          <option value="Mülk Sahibi Oturuyor">Mülk Sahibi Oturuyor</option>
+        </select><br>
+
+        <button type="button" id="predictButton">Tahmin Et</button>
+      </form>
+      </div>
+    </div>
+
+    <div class="right-section">
+      <div class="upper-right-section">
+        <div class="form-section">
+          <form id="linkForm">
+        <label for="link">EmlakJet Link:</label>
+        <input type="url" name="link"><br>
+        <button type="button" id="linkpredictButton">Tahmin Et</button>
+      </form>
+        </div>
+      </div>
+      <div class="lower-right-section">
+        <div id="resultTable" class="form-section">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+        $(document).ready(function() {
+$('#predictButton').click(function () {
+  var formData = $('#propertyForm').serialize();
+
+  $.ajax({
+    type: 'POST',
+    url: '/save_property',
+    data: formData,
+    success: function (response) {
+      $.ajax({
+        type: 'GET',
+        url: '/predict',
+        success: function (predictionResponse) {
+          $('#resultTable').empty();
+
+          var resultDiv = $('<div>').appendTo('#resultTable');
+
+          resultDiv.addClass('result-text');
+
+          var priceDifferenceDirection = predictionResponse.y_pred_int > predictionResponse.price ? "daha ucuz" : "daha pahalı";
+          var absPercentageDifference = Math.abs(predictionResponse.x).toFixed(2);
+          var diff = Math.abs(predictionResponse.price - predictionResponse.y_pred_int)
+
+          var resultText = "";
+          resultText += "Gerçek fiyat: " + predictionResponse.price + "<br>";
+          resultText += "Tahmin edilen fiyat: " + predictionResponse.y_pred_int + "<br>";
+          resultText += "Bu evin kirası tahmin edilene göre "  + "%" + absPercentageDifference + " (" + diff + " TL) " + priceDifferenceDirection + ".<br>";
+          if (predictionResponse.sonuc) {
+            resultText += "<span class='note-text'>" + predictionResponse.sonuc + "</span><br>";
+          }
+          if (priceDifferenceDirection === "daha ucuz") {
+          $('.container').css('background-color', '#60a968');
+        } else {
+          $('.container').css('background-color', '#b55a5a');
+        }
+          resultDiv.html(resultText);
+        },
+        error: function (error) {
+          $('#resultTable').text("Error: " + JSON.stringify(error));
+        }
+      });
+    },
+    error: function (error) {
+      $('#resultTable').text("Error: " + JSON.stringify(error));
+    }
+  });
+});
+
+$('#linkpredictButton').click(function () {
+  var linkData = $('#linkForm').serialize();
+
+  $.ajax({
+    type: 'POST',
+    url: '/savelink',
+    data: linkData,
+    success: function (response) {
+      $.ajax({
+        type: 'GET',
+        url: '/linkpredict',
+        success: function (predictionResponse) {
+          $('#resultTable').empty();
+
+          var resultDiv = $('<div>').appendTo('#resultTable');
+
+          var priceDifferenceDirection = predictionResponse.y_pred_int > predictionResponse.price ? "daha ucuz" : "daha pahalı";
+          var absPercentageDifference = Math.abs(predictionResponse.x).toFixed(2);
+          var diff = Math.abs(predictionResponse.price - predictionResponse.y_pred_int)
+
+
+          var resultText = "";
+          resultText += "Gerçek fiyat: " + predictionResponse.price + "<br>";
+          resultText += "Tahmin edilen fiyat: " + predictionResponse.y_pred_int + "<br>";
+          resultText += "Bu evin kirası tahmin edilene göre "  + "%" + absPercentageDifference + " (" + diff + " TL) " + priceDifferenceDirection + ".<br>";
+          if (predictionResponse.sonuc) {
+            resultText += "<span class='note-text'>" + predictionResponse.sonuc + "</span><br>";
+          }
+          if (priceDifferenceDirection === "daha ucuz") {
+          $('.container').css('background-color', '#60a968');
+        } else {
+          $('.container').css('background-color', '#b55a5a');
+        }
+
+          resultDiv.html(resultText);
+        },
+        error: function (error) {
+          $('#resultTable').text("Error: " + JSON.stringify(error));
+        }
+      });
+    },
+    error: function (error) {
+      $('#resultTable').text("Error: " + JSON.stringify(error));
+    }
+  });
+});
+});
+  </script>
+</body>
+</html>

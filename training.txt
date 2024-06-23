@@ -1,0 +1,122 @@
+from google.colab import drive
+drive.mount('/content/drive')
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.model_selection import train_test_split
+import math
+
+file_path = '/content/drive/MyDrive/6923/a/databasenor.csv'
+raw_path = '/content/drive/MyDrive/6923/a/database.csv'
+
+#Reading CSV files into dataframes
+data = pd.read_csv(file_path)
+data_raw = pd.read_csv(raw_path)
+
+fiyatlar = data_raw['Fiyat'].values
+min_val = np.min(fiyatlar)
+max_val = np.max(fiyatlar)
+
+#Initializing arrays
+Y = data['Fiyat'].values
+data.drop(columns=['Fiyat','İlan Güncelleme Tarihi','Brüt Metrekare','Net Metrekare','Bulunduğu Kat'], inplace=True)
+X = data.values
+ones_column = np.ones((X.shape[0], 1))
+X = np.hstack((ones_column, X))
+theta = np.zeros(X.shape[1])
+
+def reverse_normalization(x_normalized, min_val, max_val):
+    reversed_x = (x_normalized * (max_val - min_val)) + min_val
+    return reversed_x
+
+def cost_function(y_pred, y):
+    m = len(y)
+    squared_errors = (y_pred - y) ** 2
+    sum_squared_errors = squared_errors.sum()
+    cost = sum_squared_errors / (2 * m)
+    return cost
+
+def r_squared(x_list, y_list):
+    n = len(x_list)
+    x_bar = sum(x_list)/n
+    y_bar = sum(y_list)/n
+    x_std = math.sqrt(sum([(xi-x_bar)**2 for xi in x_list])/(n-1))
+    y_std = math.sqrt(sum([(yi-y_bar)**2 for yi in y_list])/(n-1))
+    zx = [(xi-x_bar)/x_std for xi in x_list]
+    zy = [(yi-y_bar)/y_std for yi in y_list]
+    r = sum(zxi*zyi for zxi, zyi in zip(zx, zy))/(n-1)
+    r = r ** 2
+    return r
+
+def gradient_descent(X, y, theta, learning_rate, number_of_iterations, gradient_clip, tolerance = 0.0000001):
+    m = len(y)
+    cost_history = []
+    prev_cost = np.inf
+
+    for i in range(number_of_iterations):
+        error = np.dot(X, theta) - y
+        gradient = np.dot(X.T, error) / m
+        gradient = np.clip(gradient, -gradient_clip, gradient_clip)
+        theta = theta - (learning_rate * gradient)
+        y_pred = np.dot(X, theta)
+        cost = cost_function(y_pred, y)
+        cost_history.append(cost)
+        print(f"Iteration {i}, Cost: {cost}, r^2 = {r_squared(y_pred,y)}")
+        if abs(prev_cost - cost) < tolerance:
+            break
+        prev_cost = cost
+    return theta, cost_history
+
+
+learning_rate = 0.23
+num_iterations = 0
+gradient_clip = 0.5
+
+X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.2, random_state = 42)
+theta, cost_history = gradient_descent(X_train, y_train, theta,
+                                       learning_rate, num_iterations, gradient_clip)
+
+#print("X is :", X)
+#print("Theta is: ", theta)
+y_pred_test = np.dot(X_test, theta)
+
+mse = cost_function(y_pred_test, y_test)
+r2 = r_squared(y_test, y_pred_test)
+
+print("Linear Regression Model:")
+print("Mean Squared Error (MSE):", mse)
+print("R-squared (R2) Score:", r2)
+
+indexler = np.argsort(y_test)
+y_sorted = y_test[indexler]
+y_pred_sorted = y_pred_test[indexler]
+
+y_pred_sorted = reverse_normalization(y_pred_sorted,min_val,max_val)
+y_sorted = reverse_normalization(y_sorted,min_val,max_val)
+
+#Plotting the regression line and data points
+plt.plot(y_pred_sorted, y_sorted, 'bo', label='Actual vs. Predicted')
+plt.plot([min(y_sorted), max(y_sorted)], [min(y_sorted), max(y_sorted)],
+         color='red', linestyle='--', label='Regression Line')
+plt.xlim(7000,40000)
+plt.ylim(7000,40000)
+plt.xlabel('Predicted Values')
+plt.ylabel('Actual Values')
+plt.legend()
+plt.title('Actual vs. Predicted Values')
+plt.show()
+
+#Plotting the cost history
+plt.plot(range(len(cost_history)), cost_history)
+plt.xlabel('Iterations')
+plt.ylabel('Cost')
+plt.show()
+
+print("Actual Values   Predicted Values")
+print("--------------------------------")
+for actual, predicted in zip(y_sorted, y_pred_sorted):
+    print(f"{actual:.2f}       {predicted:.2f}")
+
+for i in range(0,len(theta)):
+  print(theta[i])
