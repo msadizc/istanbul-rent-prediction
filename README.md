@@ -1,5 +1,5 @@
 # istanbul-rent-prediction
-### Real Estate Pricing Prediction Project
+### Istanbul Real Estate Pricing Prediction Project
 
 This project focuses on building a predictive model to estimate real estate prices using linear regression. Below is a summary of the tasks completed:
 
@@ -12,5 +12,3 @@ This project focuses on building a predictive model to estimate real estate pric
 4. **Implementation and Testing**: The model was implemented in a Flask application, enabling real-time predictions. The application featured a web interface where users could input property details or provide a URL for scraping property information. The predicted price and its comparison to the actual price were displayed on the interface.
 
 5. **Result Visualization and Deployment**: Predictions were visualized using Matplotlib, and functionality was included to convert normalized predictions back to Turkish Lira. The Flask application was modularized into separate components for web scraping, data processing, and prediction, ensuring a clean and maintainable codebase.
-
-This project illustrates the application of machine learning techniques to a real-world problem, providing practical experience in model development, data processing, and web application deployment.
